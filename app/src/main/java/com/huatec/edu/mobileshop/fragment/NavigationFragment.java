@@ -1,148 +1,114 @@
 package com.huatec.edu.mobileshop.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-
 import com.huatec.edu.mobileshop.R;
+import com.huatec.edu.mobileshop.common.BaseFragment;
 
 /**
  * Created by 小娘子 on 2018/10/26.
  */
 
 public class NavigationFragment extends BaseFragment implements View.OnClickListener {
-   private LinearLayout tabItemHome;
-    private LinearLayout tabItemCategory;
-    private LinearLayout tabItemCart;
-    private LinearLayout tabItemPersonal;
     private ImageButton tabItemHomeBtn;
     private ImageButton tabItemCategoryBtn;
     private ImageButton tabItemCartBtn;
     private  ImageButton tabItemPersonalBtn;
-    HomeFragment homeFragment;
-    CategoryFragment categoryFragment;
-    CartFragment cartFragment;
-    PersonFragment personFragment;
-    private int currentId;
 
-    @Nullable
+    private HomeFragment homeFragment;
+    private CategoryFragment categoryFragment;
+    private CartFragment cartFragment;
+    private PersonFragment personFragment;
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_navigation, container, false);
-        initViews(view);
-        setTabSelection(R.id.tab_item_home);
-        return view;
+    public int getContentViewId() {
+        return R.layout.fragment_navigation;
     }
 
-    private void setTabSelection(int id) {
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        //初始化控件
+        tabItemHomeBtn = view.findViewById(R.id.ib_home);
+        tabItemCartBtn= view.findViewById(R.id.ib_cart);
+        tabItemCategoryBtn= view.findViewById(R.id.ib_sort);
+        tabItemPersonalBtn= view.findViewById(R.id.ib_person);
+        //设置单击事件
+        tabItemHomeBtn.setOnClickListener(this);
+        tabItemCartBtn.setOnClickListener(this);
+        tabItemCategoryBtn.setOnClickListener(this);
+        tabItemPersonalBtn.setOnClickListener(this);
+        //默认进去的第一个布局是home页
+        select(tabItemHomeBtn);
+    }
 
+    private void select(View v) {
         tabItemHomeBtn.setImageResource(R.mipmap.tab_item_home_focus);
-        tabItemCategoryBtn.setImageResource(R.mipmap.tab_item_category_focus);
         tabItemCartBtn.setImageResource(R.mipmap.tab_item_cart_focus);
+        tabItemCategoryBtn.setImageResource(R.mipmap.tab_item_category_focus);
         tabItemPersonalBtn.setImageResource(R.mipmap.tab_item_personal_focus);
-
-        FragmentTransaction fragmentTransaction=getFragmentManager().beginTransaction();
-        if(homeFragment!=null){
-            fragmentTransaction.hide(homeFragment);
-
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (homeFragment != null) {
+            transaction.hide(homeFragment);
         }
-        if(categoryFragment!=null){
-            fragmentTransaction.hide(categoryFragment);
-
+        if (categoryFragment != null) {
+            transaction.hide(categoryFragment);
         }
-        if(cartFragment!=null){
-            fragmentTransaction.hide(cartFragment);
-
+        if (cartFragment != null) {
+            transaction.hide(cartFragment);
         }
-        if(personFragment!=null){
-            fragmentTransaction.hide(personFragment);
-
+        if (personFragment != null) {
+            transaction.hide(personFragment);
         }
-        
-        
-        switch (id){
-            case R.id.tab_item_home:
+        switch (v.getId()){
+            case R.id.ib_home:
                 tabItemHomeBtn.setImageResource(R.mipmap.tab_item_home_normal);
                 if(homeFragment==null){
-                    homeFragment=new HomeFragment();
-                    fragmentTransaction.add(R.id.content,homeFragment);
+                    homeFragment =new HomeFragment();
+                    transaction.add(R.id.fl_nav,homeFragment);
                 }else{
-                    fragmentTransaction.show(homeFragment);
+                    transaction.show(homeFragment);
                 }
                 break;
-
-
-            case R.id.tab_item_category:
-                tabItemHomeBtn.setImageResource(R.mipmap.tab_item_category_normal);
-                if(categoryFragment==null){
-                    categoryFragment=new CategoryFragment();
-                    fragmentTransaction.add(R.id.content,categoryFragment);
-                }else{
-                    fragmentTransaction.show(categoryFragment);
-                }
-                break;
-
-
-            case R.id.tab_item_cart:
-                tabItemHomeBtn.setImageResource(R.mipmap.tab_item_cart_normal);
+            case R.id.ib_cart:
+                tabItemCartBtn.setImageResource(R.mipmap.tab_item_cart_normal);
                 if(cartFragment==null){
-                    cartFragment=new CartFragment();
-                    fragmentTransaction.add(R.id.content,cartFragment);
+                    cartFragment= new CartFragment();
+                    transaction.add(R.id.fl_nav,cartFragment);
                 }else{
-                    fragmentTransaction.show(cartFragment);
+                    transaction.show(cartFragment);
                 }
                 break;
-
-
-            case R.id.tab_item_personal:
-                tabItemHomeBtn.setImageResource(R.mipmap.tab_item_personal_normal);
-                if(personFragment==null){
-                    personFragment=new PersonFragment();
-                    fragmentTransaction.add(R.id.content,personFragment);
+            case R.id.ib_sort:
+                tabItemCategoryBtn.setImageResource(R.mipmap.tab_item_category_normal);
+                if(categoryFragment==null){
+                    categoryFragment =new CategoryFragment();
+                    transaction.add(R.id.fl_nav,categoryFragment);
                 }else{
-                    fragmentTransaction.show(personFragment);
+                    transaction.show(categoryFragment);
+                }
+                break;
+            case R.id.ib_person:
+                tabItemPersonalBtn.setImageResource(R.mipmap.tab_item_personal_normal);
+                if(personFragment==null){
+                    personFragment =new PersonFragment();
+                    transaction.add(R.id.fl_nav,personFragment);
+                }else{
+                    transaction.show(personFragment);
                 }
                 break;
         }
-        
-        fragmentTransaction.commit();
-        currentId=id;
-        
+        transaction.commit();
     }
-
-
-    private void initViews(View view) {
-        tabItemHome= (LinearLayout) view.findViewById(R.id.tab_item_home);
-        tabItemHome.setOnClickListener(this);
-
-        tabItemCategory= (LinearLayout) view.findViewById(R.id.tab_item_category);
-        tabItemHome.setOnClickListener(this);
-
-        tabItemCart= (LinearLayout) view.findViewById(R.id.tab_item_cart);
-        tabItemHome.setOnClickListener(this);
-
-        tabItemPersonal= (LinearLayout) view.findViewById(R.id.tab_item_personal);
-        tabItemHome.setOnClickListener(this);
-
-        tabItemHomeBtn=(ImageButton) view.findViewById(R.id.teb_item_home_btn);
-        tabItemCategoryBtn=(ImageButton) view.findViewById(R.id.teb_item_home_btn);
-        tabItemCartBtn=(ImageButton) view.findViewById(R.id.teb_item_home_btn);
-        tabItemPersonalBtn=(ImageButton) view.findViewById(R.id.teb_item_home_btn);
-
-
-        FragmentManager manager = getFragmentManager();
-    }
-
-
     @Override
     public void onClick(View v) {
-
+        select(v);
     }
+
+
 }
